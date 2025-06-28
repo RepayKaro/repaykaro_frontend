@@ -5,11 +5,12 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function GET(
     request: Request,
-    { params }: { params: { phoneNumber: string } }
+    context: { params: { phoneNumber: string } }
 ) {
     try {
-        const adminToken = (await cookies()).get('admin_token')?.value;
-
+        // ✅ Await cookies() before using
+        const cookieStore = await cookies();
+        const adminToken = (await cookieStore).get('admin_token')?.value;
 
         if (!adminToken) {
             return NextResponse.json(
@@ -18,22 +19,27 @@ export async function GET(
             );
         }
 
-        const phoneNumber = await params.phoneNumber.trim();
+        // ✅ Await context.params
+        const { phoneNumber: rawPhoneNumber } = await context.params;
+        console.log("phoneNumber",rawPhoneNumber)
+        // ✅ Decode
+        const base64PhoneNumber = decodeURIComponent(rawPhoneNumber);
+        const phoneNumber = Buffer.from(base64PhoneNumber, 'base64').toString('utf-8').trim();
 
         if (!phoneNumber) {
             return NextResponse.json(
-                { success: false, message: 'Missing required fields: user ID.' },
+                { success: false, message: 'Missing required fields: phone number.' },
                 { status: 400 }
             );
         }
 
-        const response = await fetch(`${API_BASE_URL}/customers/${phoneNumber}`, {
+        const response = await fetch(`${API_BASE_URL}/customers/${rawPhoneNumber}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${adminToken}`,
                 'Content-Type': 'application/json',
             },
-            cache: 'no-store' // Important for dynamic data
+            cache: 'no-store',
         });
 
         if (!response.ok) {
