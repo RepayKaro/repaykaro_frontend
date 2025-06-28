@@ -629,7 +629,7 @@ const CustomerTable: React.FC = () => {
                           }`}
                         className="inline-block"
                       >
-                        <span onClick={() => alert("hello")} className="inline-flex items-center gap-1 mt-1">
+                        <span className="inline-flex items-center gap-1 mt-1">
                           {cust.customer}
                         </span>
                         <br />
