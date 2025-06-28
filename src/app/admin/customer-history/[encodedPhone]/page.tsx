@@ -3,7 +3,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { useParams } from 'next/navigation';
 import Image from "next/image";
-import { Buffer } from 'buffer';
+
 // Define response structure
 interface CustomerBasicDetails {
     _id: string;
@@ -118,7 +118,7 @@ export default function UserMetaCard() {
                     .replace(/-/g, '+')
                     .replace(/_/g, '/');
 
-                const decoded = Buffer.from(cleanBase64, 'base64').toString('ascii');
+                const decoded = cleanBase64;
                 const cleanPhone = decoded.replace(/\D/g, ''); // Remove non-digits
 
                 setDecodedPhone(cleanPhone);

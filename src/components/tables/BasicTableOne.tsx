@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Buffer } from 'buffer';
+
 import Link from 'next/link';
 // import { useDebounce } from '@/hooks/useDebounce';
 import { Table, TableBody, TableCell, TableHeader, TableRow } from '../ui/table';
@@ -625,8 +625,7 @@ const CustomerTable: React.FC = () => {
                     <TableCell className="px-5 py-1 text-start text-theme-sm text-gray-800 dark:text-white/90">
 
                       <Link
-                        href={`/admin/customer-history/${Buffer.from(String(cust.phone)).toString('base64')
-                          }`}
+                        href={`/admin/customer-history/${cust.phone}`}
                         className="inline-block"
                       >
                         <span className="inline-flex items-center gap-1 mt-1">

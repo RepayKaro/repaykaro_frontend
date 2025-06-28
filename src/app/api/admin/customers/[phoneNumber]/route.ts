@@ -23,10 +23,9 @@ export async function GET(
         const { phoneNumber: rawPhoneNumber } = await context.params;
         console.log("phoneNumber",rawPhoneNumber)
         // ✅ Decode
-        const base64PhoneNumber = decodeURIComponent(rawPhoneNumber);
-        const phoneNumber = Buffer.from(base64PhoneNumber, 'base64').toString('utf-8').trim();
+       
 
-        if (!phoneNumber) {
+        if (!rawPhoneNumber) {
             return NextResponse.json(
                 { success: false, message: 'Missing required fields: phone number.' },
                 { status: 400 }
