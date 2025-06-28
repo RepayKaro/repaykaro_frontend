@@ -71,7 +71,7 @@ export default function HomePage() {
                                         href="/signin"
                                         className="hover-button inline-flex justify-center items-center px-8 py-4 border border-transparent text-base font-medium rounded-2xl text-white gradient-bg hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transform hover:scale-105 transition-all duration-500 shadow-xl hover:shadow-2xl animate-pulse-subtle"
                                     >
-                                        Check Your Offer
+                                        Check Your Offer.
                                     </Link>
                                     <Link
                                         href="#features"
