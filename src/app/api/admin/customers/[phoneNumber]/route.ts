@@ -32,7 +32,7 @@ export async function GET(
             );
         }
 
-        const response = await fetch(`${API_BASE_URL}/customers/${rawPhoneNumber}`, {
+        const response = await fetch(`${API_BASE_URL}/customers/customer-details/${rawPhoneNumber}`, {
             method: 'GET',
             headers: {
                 Authorization: `Bearer ${adminToken}`,
