@@ -65,7 +65,7 @@ export default function UploadCustomersPage() {
             // Wait 2.5 seconds before validating
             setTimeout(() => {
                 validateExcelHeaders(acceptedFiles[0]);
-            }, 10000);
+            }, 2500);
         }
     };
 

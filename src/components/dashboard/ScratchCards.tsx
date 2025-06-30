@@ -49,19 +49,21 @@ export default function ScratchCards() {
   }, []);
 
   const handleRedeem = async (cardId: string) => {
-    try {
-      const response = await fetch(`/api/scratch-cards/${cardId}/redeem`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-      const data = await response.json();
-      if (data.success) {
-        setCards(cards.map(card => card._id === cardId ? { ...card, redeemed: 1 } : card));
-        window.open('https://repaykaro.rewardzpromo.com/', '_blank');
-      }
-    } catch (error) {
-      console.error('Error redeeming card:', error);
-    }
+    console.log('Redeeming card:', cardId);
+    window.open('https://repaykaro.rewardzpromo.com/', '_blank');
+    // try {
+    //   const response = await fetch(`/api/scratch-cards/${cardId}/redeem`, {
+    //     method: 'POST',
+    //     credentials: 'include',
+    //   });
+    //   const data = await response.json();
+    //   if (data.success) {
+    //     setCards(cards.map(card => card._id === cardId ? { ...card, redeemed: 1 } : card));
+
+    //   }
+    // } catch (error) {
+    //   console.error('Error redeeming card:', error);
+    // }
   };
 
   const handleCopyCode = async (code: string) => {

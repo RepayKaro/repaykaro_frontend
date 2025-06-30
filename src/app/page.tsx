@@ -43,7 +43,7 @@ export default function HomePage() {
 
             <main className="flex-grow">
                 {/* Hero Section */}
-                <section className="relative min-h-screen flex items-center pt-20 pb-12 md:pt-32 md:pb-20 bg-gradient-to-b from-white to-purple-50 dark:from-gray-900 dark:to-gray-800 overflow-hidden  shadow-lg">
+                <section className="mb-1 relative min-h-screen flex items-center pt-20 pb-12 md:pt-32 md:pb-20 bg-gradient-to-b from-white to-purple-50 dark:from-gray-900 dark:to-gray-800 overflow-hidden  shadow-lg">
                     {/* Animated Background Elements */}
                     <div className="absolute inset-0 overflow-hidden">
                         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-400 via-transparent to-transparent animate-pulse"></div>
@@ -82,18 +82,29 @@ export default function HomePage() {
                                 </div>
                             </ScrollAnimation>
                             <ScrollAnimation animation="slideRight" className="hidden md:block relative" delay={500}>
-                                <div className="relative w-full h-[400px] transform hover:scale-105 transition-transform duration-700 rounded-2xl shadow-xl overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-500/20 to-pink-500/20 animate-gradient-shift"></div>
+                                <div className="relative w-full h-[400px] transform hover:scale-105 transition-transform duration-700 overflow-hidden">
+
+                                    {/* Dark mode image */}
                                     <Image
-                                        src="/images/carousel/carousel-04.png"
-                                        alt="RepayKaro Platform"
+                                        src="/images/mobile-chat-black.png"
+                                        alt="RepayKaro platform mobile UI in dark mode"
                                         fill
-                                        className="object-contain animate-float"
+                                        className="hidden dark:block object-contain rounded-3xl animate-float"
                                         priority
                                     />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent animate-shine"></div>
+
+                                    {/* Light mode image */}
+                                    <Image
+                                        src="/images/mobile-chat-white.png"
+                                        alt="RepayKaro platform mobile UI in light mode"
+                                        fill
+                                        className="block dark:hidden object-contain rounded-3xl animate-float"
+                                        priority
+                                    />
+
                                 </div>
                             </ScrollAnimation>
+
                         </div>
                     </div>
                 </section>
@@ -317,45 +328,49 @@ export default function HomePage() {
                     </div>
                 </section>
                 {/* Partners Section */}
-                <section className="py-2 bg-gray-50 dark:bg-gray-800  shadow-inner-top">
-                    <div className="relative min-h-[700px]  mt-1">
-                        {/* Cat Background Image */}
-                        <div className="absolute inset-0 z-0">
-                            <Image
-                                src="/images/cat_white.svg"
-                                alt="Decorative background"
-                                fill
-                                className="object-cover rounded-3xl animate-float dark:hidden "
-
-                            />
+                <section className="py-2 bg-gray-50 dark:bg-gray-800 shadow-inner-top">
+                    <div className="relative min-h-[200px] mt-1">
+                        {/* Cat Background Image aligned to the right */}
+                        <div className="absolute inset-0 z-0 flex justify-end items-start pr-4">
                             <Image
                                 src="/images/cat_black.svg"
                                 alt="Decorative background"
-                                fill
-                                className="hidden object-cover rounded-3xl animate-float dark:block "
-
+                                width={900}
+                                height={200}
+                                className="object-cover rounded-3xl animate-float"
                             />
+                           
                         </div>
 
                         {/* Content Container (positioned above background) */}
-                        <div className="relative  p-8 md:p-12 max-w-2xl">
+                        <div className="relative p-8 md:p-12 max-w-2xl">
                             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 animate-fadeIn">
-                                There will : A <span className="gradient-text animate-gradient">be partner</span>
+                                Our Partners: <span className="gradient-text animate-gradient">Coming Soon ...</span>
                             </h2>
-                            <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed animate-fadeIn" style={{ animationDelay: '0.6s' }}>
-                                RepayKaro takes a unique approach to debt recovery by offering customers exciting incentives in return for prompt repayment. These rewards can be redeemed on major online platforms, making the repayment process more engaging and rewarding for customers.
+                            <p
+                                className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed animate-fadeIn"
+                                style={{ animationDelay: '0.6s' }}
+                            >
+                                Get back to us soon to see our partners who are helping us in this journey of debt recovery. We are working
+                                with various financial institutions and businesses to provide the best services to our customers.
                             </p>
                         </div>
 
                         {/* Animation Style */}
                         <style jsx global>{`
-    @keyframes float {
-      0%, 100% { transform: translateY(0) scale(.9); }
-      50% { transform: translateY(-20px) scale(1); }
-    }
-  `}</style>
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) scale(0.9);
+        }
+        50% {
+          transform: translateY(-20px) scale(1);
+        }
+      }
+    `}</style>
                     </div>
                 </section>
+
 
 
                 {/* Get Started / Contact Form */}
@@ -368,7 +383,7 @@ export default function HomePage() {
                             <p className="text-lg text-gray-600 dark:text-gray-300 mb-2 animate-fadeIn" style={{ animationDelay: '0.5s' }}>100% Satisfaction Guaranteed</p>
                             <p className="text-lg text-gray-600 dark:text-gray-300 animate-fadeIn" style={{ animationDelay: '0.7s' }}>Reach out to us via our contact form, and a member of our team will be in touch to help you get started.</p>
                         </ScrollAnimation>
-                        
+
                         <ScrollAnimation animation="slideUp" className="space-y-6" delay={600}>
                             <form className="space-y-6 bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 animate-fadeIn">
                                 {/* Form fields with animations */}
