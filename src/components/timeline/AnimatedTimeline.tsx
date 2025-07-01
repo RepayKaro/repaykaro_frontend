@@ -71,7 +71,7 @@ const TimelineItemCard: React.FC<{
             className="mb-10 last:mb-0 relative"
         >
             {/* Icon instead of dot */}
-            <div className="absolute -left-[50px] top-1.5 bg-white dark:bg-gray-900 p-3 rounded-full shadow-md">
+            <div className="absolute -left-[50px]  bg-white dark:bg-gray-900 p-3 rounded-full shadow-md">
                 <Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
 

@@ -70,7 +70,7 @@ export default function Home() {
             <Head>
                 <title>Timeline</title>
             </Head>
-            <main className="flex-1 flex flex-col overflow-y-auto min-h-0 p-0 bg-gradient-to-b from-white to-purple-50 dark:from-gray-900 dark:to-gray-800 ">
+            <main className="flex-1 flex flex-col">
                 <div className="sticky top-0 z-20 bg-white dark:bg-gray-900 backdrop-blur dark:border-gray-800  border-r border-gray-200 shadow-sm  ">
                     {user && <WelcomeHeader user={user as unknown as User} />}
                 </div>
