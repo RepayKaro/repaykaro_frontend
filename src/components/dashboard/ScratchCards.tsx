@@ -2,6 +2,8 @@ import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { ScratchCard } from 'next-scratchcard';
 import { toast } from 'react-hot-toast';
+import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ScratchCardAmount {
   $numberDecimal: string;
@@ -24,7 +26,10 @@ export default function ScratchCards() {
   const [cards, setCards] = useState<ScratchCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [scratchedCardId, setScratchedCardId] = useState<string | null>(null);
   const hasFetched = useRef(false);
+  console.log(scratchedCardId)
 
   const fetchCards = async () => {
     try {
@@ -51,19 +56,6 @@ export default function ScratchCards() {
   const handleRedeem = async (cardId: string) => {
     console.log('Redeeming card:', cardId);
     window.open('https://repaykaro.rewardzpromo.com/', '_blank');
-    // try {
-    //   const response = await fetch(`/api/scratch-cards/${cardId}/redeem`, {
-    //     method: 'POST',
-    //     credentials: 'include',
-    //   });
-    //   const data = await response.json();
-    //   if (data.success) {
-    //     setCards(cards.map(card => card._id === cardId ? { ...card, redeemed: 1 } : card));
-
-    //   }
-    // } catch (error) {
-    //   console.error('Error redeeming card:', error);
-    // }
   };
 
   const handleCopyCode = async (code: string) => {
@@ -86,6 +78,55 @@ export default function ScratchCards() {
     } catch (err) {
       console.error('Failed to copy code:', err);
       toast.error('Failed to copy code');
+    }
+  };
+
+  const triggerCelebration = () => {
+    // Confetti animation
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#FFD700', '#FFA500', '#FF6347', '#FF69B4', '#9370DB']
+    });
+
+    // Coin burst animation
+    setTimeout(() => {
+      confetti({
+        particleCount: 30,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+        colors: ['#FFD700']
+      });
+      confetti({
+        particleCount: 30,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+        colors: ['#FFD700']
+      });
+    }, 250);
+
+    setShowCelebration(true);
+    setTimeout(() => setShowCelebration(false), 3000);
+  };
+
+  const handleScratchComplete = async (cardId: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/scratch-cards/${cardId}/scratch`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+      const data = await response.json();
+      if (data.success) {
+        setScratchedCardId(cardId);
+        triggerCelebration();
+        fetchCards();
+      }
+    } catch (err) {
+      console.error('Failed to mark card scratched:', err);
     }
   };
 
@@ -116,9 +157,56 @@ export default function ScratchCards() {
           border-width: 2px;
           border-color: #9333ea;
         }
+        @keyframes float {
+          0% { transform: translateY(0px) rotate(0deg); }
+          50% { transform: translateY(-20px) rotate(5deg); }
+          100% { transform: translateY(0px) rotate(0deg); }
+        }
+        .floating-coin {
+          animation: float 3s ease-in-out infinite;
+        }
       `}</style>
 
       <h2 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">Your Rewards</h2>
+
+      {/* Celebration Animation */}
+     {/* Celebration Animation */}
+<AnimatePresence>
+  {showCelebration && (
+    <>
+      {/* Add this backdrop div for blur effect */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-40 backdrop-blur-sm bg-black/30"
+      />
+      
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+      >
+        <motion.div 
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 500 }}
+          className="text-4xl font-bold text-yellow-400"
+        >
+          <>
+          🎉 Congratulations! 🎉
+          <br></br>
+         You get a scratch card worth 
+         <p className='text-center'> ₹{parseFloat(cards.find(card => card._id === scratchedCardId)?.amount.$numberDecimal || '0').toFixed(2)}!</p>
+          
+          </>
+          
+        </motion.div>
+      </motion.div>
+    </>
+  )}
+</AnimatePresence>
 
       {cards.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -133,21 +221,7 @@ export default function ScratchCards() {
                     image="/images/scratch-cover.svg"
                     finishPercent={15}
                     brushSize={30}
-                    onComplete={async () => {
-                      try {
-                        setLoading(true);
-                        const response = await fetch(`/api/scratch-cards/${card._id}/scratch`, {
-                          method: 'POST',
-                          credentials: 'include',
-                        });
-                        const data = await response.json();
-                        if (data.success) {
-                          fetchCards();
-                        }
-                      } catch (err) {
-                        console.error('Failed to mark card scratched:', err);
-                      }
-                    }}
+                    onComplete={() => handleScratchComplete(card._id)}
                   >
                     <div className="flex flex-col items-center justify-center h-full bg-gradient-to-r from-brand-100 to-brand-50 dark:from-brand-900 dark:to-brand-800">
                       <div className="text-4xl font-bold text-brand-600 dark:text-brand-400 mb-2">
@@ -160,21 +234,51 @@ export default function ScratchCards() {
                   </ScratchCard>
                 </div>
               ) : (
-                <div className="p-6">
+                <motion.div
+                  className="p-6"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
                   <div className="flex flex-col items-center space-y-4">
-                    <div className="text-3xl font-bold text-brand-600 dark:text-brand-400">
+                    <motion.div
+                      className="text-3xl font-bold text-brand-600 dark:text-brand-400"
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      transition={{ delay: 0.2 }}
+                    >
                       ₹{parseFloat(card.amount.$numberDecimal).toFixed(2)}
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${card.redeemed === 1
-                      ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
-                      : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'}`}>{card.redeemed === 1 ? 'Redeemed' : 'Ready to Redeem'}</span>
+                    </motion.div>
+                    <motion.span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${card.redeemed === 1
+                        ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'}`}
+                      initial={{ y: 20, opacity: 0 }}
+                      animate={{ y: 0, opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      {card.redeemed === 1 ? 'Redeemed' : 'Ready to Redeem'}
+                    </motion.span>
                     {card.redeemed === 0 && (
-                      <button onClick={() => handleRedeem(card._id)} className="flex items-center space-x-1 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-sm font-medium transition-colors">
+                      <motion.button
+                        onClick={() => handleRedeem(card._id)}
+                        className="flex items-center space-x-1 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white rounded-lg text-sm font-medium transition-colors"
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        initial={{ y: 20, opacity: 0 }}
+                        animate={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.4 }}
+                      >
                         <span>Redeem Now</span>
-                      </button>
+                      </motion.button>
                     )}
                   </div>
-                  <div className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400">
+                  <motion.div
+                    className="mt-4 text-center text-sm text-gray-600 dark:text-gray-400"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
                     <div className="flex items-center justify-center space-x-2">
                       <span>Code: </span>
                       <div className="relative flex items-center">
@@ -186,8 +290,8 @@ export default function ScratchCards() {
                     </div>
                     <div>Valid for {card.validity} days</div>
                     <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">Created: {new Date(card.createdAt).toLocaleDateString()}</div>
-                  </div>
-                </div>
+                  </motion.div>
+                </motion.div>
               )}
             </div>
           ))}

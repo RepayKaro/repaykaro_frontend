@@ -145,7 +145,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col shadow-2xl bg-gray-100 dark:bg-gray-800">
         {/* Mobile Header */}
-        <header className="md:hidden bg-white dark:bg-gray-900 shadow-xl rounded-tl-3xl p-4 flex-shrink-0">
+        <header className="md:hidden bg-white dark:bg-gray-900 shadow-xl  p-4 flex-shrink-0">
           <div className="flex items-center justify-between h-16">
             <button
               className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
