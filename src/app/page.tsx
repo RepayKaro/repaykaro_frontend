@@ -7,14 +7,97 @@ import Footer from '@/components/home/Footer';
 import ScrollAnimation from '@/components/common/ScrollAnimation';
 import TermsModal from '@/components/common/TermsModal';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export default function HomePage() {
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
+     const [isSubmitting, setIsSubmitting] = useState(false);
     // const [isVisible, setIsVisible] = useState(false);
     const handleAcceptTerms = () => {
         setAcceptedTerms(true);
         setIsModalOpen(false);
+    };
+
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        phone: '',
+        email: '',
+        message: ''
+    });
+    type FormErrors = {
+        firstName?: string;
+        lastName?: string;
+        phone?: string;
+        email?: string;
+        message?: string;
+        [key: string]: string | undefined;
+    };
+    const [errors, setErrors] = useState<FormErrors>({});
+
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+
+        // Remove the error as user types
+        if (errors[name]) {
+            setErrors(prevErrors => {
+                const updatedErrors = { ...prevErrors };
+                delete updatedErrors[name];
+                return updatedErrors;
+            });
+        }
+    };
+
+    const validate = () => {
+        const newErrors: FormErrors = {};
+
+        if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+        if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+        if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
+        else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = "Phone must be 10 digits";
+
+        if (!formData.email.trim()) newErrors.email = "Email is required";
+        else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Email is invalid";
+
+        if (!formData.message.trim()) newErrors.message = "Message is required";
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!validate()) return;
+        try {
+            setIsSubmitting(true);
+            const response = await fetch("/api/inquiry", {
+                method: "POST",
+                body: JSON.stringify(formData),
+                credentials: "include",
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                toast.success('Inquiry submitted successfully!');
+
+                setFormData({ firstName: '', lastName: '', phone: '', email: '', message: '' });
+                setAcceptedTerms(false);
+                            setIsSubmitting(false);
+
+            } else {
+                toast.error(result.message || "Something went wrong!");
+                  setIsSubmitting(false);
+
+            }
+        } catch (error) {
+            console.log("Error submitting inquiry:", error);
+            toast.error("Network error. Please try again later.");
+              setIsSubmitting(false);
+        }
     };
     // useEffect(() => {
     //     const handleScroll = () => {
@@ -339,7 +422,7 @@ export default function HomePage() {
                                 height={200}
                                 className="object-cover rounded-3xl animate-float"
                             />
-                           
+
                         </div>
 
                         {/* Content Container (positioned above background) */}
@@ -385,25 +468,116 @@ export default function HomePage() {
                         </ScrollAnimation>
 
                         <ScrollAnimation animation="slideUp" className="space-y-6" delay={600}>
-                            <form className="space-y-6 bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 animate-fadeIn">
+                            <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl shadow-2xl border border-gray-200 dark:border-gray-700 animate-fadeIn">
                                 {/* Form fields with animations */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="animate-fadeIn" style={{ animationDelay: '0.8s' }}>
-                                        <label htmlFor="first-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">First Name</label>
-                                        <input type="text" name="first-name" id="first-name" autoComplete="given-name" className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-3" />
+                                    <div>
+                                        <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            First Name *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="firstName"
+                                            id="firstName"
+                                            value={formData.firstName}
+                                            onChange={handleChange}
+                                            className={`mt-1 block w-full rounded-xl shadow-sm p-3 sm:text-sm dark:bg-gray-700 dark:text-white border-2 ${errors.firstName
+                                                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                                : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500 dark:border-gray-600'
+                                                }`}
+                                        />
+                                        {errors.firstName && (
+                                            <p className="text-red-500 text-sm mt-1 animate-fadeIn">{errors.firstName}</p>
+                                        )}
                                     </div>
-                                    <div className="animate-fadeIn" style={{ animationDelay: '1s' }}>
-                                        <label htmlFor="last-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Last Name</label>
-                                        <input type="text" name="last-name" id="last-name" autoComplete="family-name" className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-3" />
+
+                                    <div>
+                                        <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Last Name *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="lastName"
+                                            id="lastName"
+                                            value={formData.lastName}
+                                            onChange={handleChange}
+                                            className={`mt-1 block w-full rounded-xl shadow-sm p-3 sm:text-sm dark:bg-gray-700 dark:text-white border-2 ${errors.lastName
+                                                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                                : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500 dark:border-gray-600'
+                                                }`}
+                                        />
+                                        {errors.lastName && (
+                                            <p className="text-red-500 text-sm mt-1 animate-fadeIn">{errors.lastName}</p>
+                                        )}
                                     </div>
+
+                                    <div>
+                                        <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Phone *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="phone"
+                                            id="phone"
+                                            value={formData.phone}
+                                            onChange={handleChange}
+                                            className={`mt-1 block w-full rounded-xl shadow-sm p-3 sm:text-sm dark:bg-gray-700 dark:text-white border-2 ${errors.phone
+                                                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                                : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500 dark:border-gray-600'
+                                                }`}
+                                        />
+                                        {errors.phone && (
+                                            <p className="text-red-500 text-sm mt-1 animate-fadeIn">{errors.phone}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                            Email *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            name="email"
+                                            id="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            className={`mt-1 block w-full rounded-xl shadow-sm p-3 sm:text-sm dark:bg-gray-700 dark:text-white border-2 ${errors.email
+                                               ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                                : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500 dark:border-gray-600'
+                                                }`}
+                                        />
+                                        {errors.email && (
+                                            <p className="text-red-500 text-sm mt-1 animate-fadeIn">{errors.email}</p>
+                                        )}
+                                    </div>
+
                                 </div>
-                                <div className="animate-fadeIn" style={{ animationDelay: '1.2s' }}>
-                                    <label htmlFor="email-address" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email Address</label>
-                                    <input id="email-address" name="email-address" type="email" autoComplete="email" className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-3" />
-                                </div>
+
+
                                 <div className="animate-fadeIn" style={{ animationDelay: '1.4s' }}>
-                                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Message</label>
-                                    <textarea id="message" name="message" rows={4} className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:ring-purple-500 focus:border-purple-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white sm:text-sm p-3"></textarea>
+                                    <label htmlFor="message" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                                        Message *
+                                    </label>
+                                    <textarea
+                                        onChange={handleChange}
+                                        id="message"
+                                        name="message"
+                                        rows={4}
+                                        value={formData.message}
+                                        className={`
+      mt-1 block w-full rounded-xl shadow-sm p-3 sm:text-sm border-2
+      ${errors.message
+                                                ? 'border-red-500 focus:ring-2 focus:ring-red-500 focus:border-red-500'
+                                                : 'border-gray-300 focus:ring-2 focus:ring-purple-500 focus:border-purple-500'
+                                            }
+      dark:bg-gray-700 dark:text-white ${!errors.message && 'dark:border-gray-600'}
+    `}
+                                    ></textarea>
+                                    {errors.message && (
+                                        <p className="text-red-500 text-sm mt-1 animate-fadeIn">
+                                            {errors.message}
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="text-center pt-4 animate-fadeIn" style={{ animationDelay: '1.6s' }}>
                                     <div className="flex items-center justify-center mb-4">
@@ -419,11 +593,19 @@ export default function HomePage() {
                                         </label>
                                     </div>
                                     <button
+
                                         type="submit"
                                         className={`hover-button inline-flex justify-center items-center px-10 py-4 border border-transparent text-base font-medium rounded-2xl text-white gradient-bg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transform transition-all duration-500 shadow-xl hover:shadow-2xl ${!acceptedTerms ? 'opacity-50 cursor-not-allowed' : 'hover:bg-purple-700 hover:scale-105 animate-pulse-subtle'}`}
                                         disabled={!acceptedTerms}
                                     >
-                                        Start Your Project
+                                        {isSubmitting ? (
+                                            <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2.93-6.364A8.001 8.001 0 0112 4v4c-2.21 0-4.21.895-5.657 2.343l2.586-2.586z"></path>
+                                            </svg>
+                                        ): (
+                                            'Start Your Project')}
+                                       
                                     </button>
                                 </div>
                             </form>
@@ -532,30 +714,10 @@ export default function HomePage() {
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
                 onAccept={handleAcceptTerms}
-                content={TERMS_AND_CONDITIONS_CONTENT}
+                content={''}
             />
         </div>
     );
 }
 
-const TERMS_AND_CONDITIONS_CONTENT = `Trems & Conditions
-Terms and Conditions – Communication Consent
-By providing your phone number and using our services, you agree and consent to receive communications from TRUE BUSINESS MINDS PRIVATE LIMITED, including but not limited to:
 
-RCS (Rich Communication Services) messages
-WhatsApp messages
-Standard SMS (Short Message Service) messages
-These communications may include important updates, promotional offers, transactional information, reminders, and other relevant content related to our services.
-
-Consent and Opt-In:
-You acknowledge that by submitting your phone number and interacting with our services (e.g., signing up, making a purchase, or contacting support), you are providing express consent to receive the above communications.
-
-Message Frequency:
-Message frequency may vary based on your interaction with our services. Standard message and data rates may apply, depending on your mobile service provider.
-
-Opt-Out Option:
-You can opt out of receiving such communications at any time by replying "STOP" to any SMS or WhatsApp message, or by contacting us directly at support@truebusinessminds.com.
-
-Privacy:
-We respect your privacy and are committed to protecting your personal information. Please review our Privacy Policy for more details on how we collect, use, and protect your data
-`; 
