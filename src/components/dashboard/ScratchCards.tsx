@@ -23,13 +23,33 @@ interface ScratchCard {
 }
 
 export default function ScratchCards() {
+  const [loadingCards, setLoadingCards] = useState<Record<string, boolean>>({});
   const [cards, setCards] = useState<ScratchCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
   const [scratchedCardId, setScratchedCardId] = useState<string | null>(null);
   const hasFetched = useRef(false);
-  console.log(scratchedCardId)
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [cardDimensions, setCardDimensions] = useState<{ width: number, height: number }[]>([]);
+  const [loadingProgress, setLoadingProgress] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      setCardDimensions(
+        cardRefs.current.map(ref => {
+          if (!ref) return { width: 340, height: 220 }; // Default fallback
+          const width = ref.clientWidth - 32; // Subtract padding
+          const height = (width * 220) / 340; // Maintain 340:220 aspect ratio
+          return { width, height };
+        })
+      );
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, [cards.length]); // Re-run on cards length change
 
   const fetchCards = async () => {
     try {
@@ -112,13 +132,25 @@ export default function ScratchCards() {
     setTimeout(() => setShowCelebration(false), 3000);
   };
 
+
   const handleScratchComplete = async (cardId: string) => {
+    setLoadingCards(prev => ({ ...prev, [cardId]: true }));
+
+    // Start progress timer
+    // Start progress timer
+    let progress = 0;
+    const interval = setInterval(() => {
+      progress += 5;
+      if (progress >= 100) clearInterval(interval);
+    }, 250); // 250ms * 20 = 5000ms (5 seconds)
     try {
-      setLoading(true);
+      // Simulate 5 second loading
+      await new Promise(resolve => setTimeout(resolve, 5000));
       const response = await fetch(`/api/scratch-cards/${cardId}/scratch`, {
         method: 'POST',
         credentials: 'include',
       });
+
       const data = await response.json();
       if (data.success) {
         setScratchedCardId(cardId);
@@ -127,6 +159,11 @@ export default function ScratchCards() {
       }
     } catch (err) {
       console.error('Failed to mark card scratched:', err);
+    } finally {
+      clearInterval(interval);
+      setLoadingCards(prev => ({ ...prev, [cardId]: false }));
+      setLoadingProgress(prev => ({ ...prev, [cardId]: 0 }));
+      console.log(loadingProgress)
     }
   };
 
@@ -139,6 +176,7 @@ export default function ScratchCards() {
       </div>
     );
   }
+
 
   return (
     <div className="p-4 relative z-0">
@@ -169,69 +207,81 @@ export default function ScratchCards() {
 
       <h2 className="text-2xl font-semibold mb-6 text-gray-800 dark:text-gray-200">Your Rewards</h2>
 
-      {/* Celebration Animation */}
-     {/* Celebration Animation */}
-<AnimatePresence>
-  {showCelebration && (
-    <>
-      {/* Add this backdrop div for blur effect */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-40 backdrop-blur-sm bg-black/30"
-      />
-      
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
-      >
-        <motion.div 
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 500 }}
-          className="text-4xl font-bold text-yellow-400"
-        >
+      <AnimatePresence>
+        {showCelebration && (
           <>
-          🎉 Congratulations! 🎉
-          <br></br>
-         You get a scratch card worth 
-         <p className='text-center'> ₹{parseFloat(cards.find(card => card._id === scratchedCardId)?.amount.$numberDecimal || '0').toFixed(2)}!</p>
-          
+            {/* Add this backdrop div for blur effect */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40 backdrop-blur-sm bg-black/30"
+            />
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none"
+            >
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: 'spring', stiffness: 500 }}
+                className="text-4xl font-bold text-yellow-400"
+              >
+                <>
+                  🎉 Congratulations! 🎉
+                  <br></br>
+                  You get a scratch card worth
+                  <p className='text-center'> ₹{parseFloat(cards.find(card => card._id === scratchedCardId)?.amount.$numberDecimal || '0').toFixed(2)}!</p>
+
+                </>
+
+              </motion.div>
+            </motion.div>
           </>
-          
-        </motion.div>
-      </motion.div>
-    </>
-  )}
-</AnimatePresence>
+        )}
+      </AnimatePresence>
 
       {cards.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {cards.map(card => (
-            <div key={card._id} className="relative rounded-xl border shadow-sm bg-white dark:bg-gray-800 overflow-hidden hover-animate">
-              {card.scratched === 0 ? (
-                <div className="p-4 relative z-10">
-                  <ScratchCard
-                    key={`${card._id}`}
-                    width={340}
-                    height={220}
-                    image="/images/scratch-cover.svg"
-                    finishPercent={15}
-                    brushSize={30}
-                    onComplete={() => handleScratchComplete(card._id)}
-                  >
-                    <div className="flex flex-col items-center justify-center h-full bg-gradient-to-r from-brand-100 to-brand-50 dark:from-brand-900 dark:to-brand-800">
-                      <div className="text-4xl font-bold text-brand-600 dark:text-brand-400 mb-2">
-                        ₹{parseFloat(card.amount.$numberDecimal).toFixed(2)}
+          {cards.map((card, index) => (
+            <div
+              key={card._id}
+              ref={el => { cardRefs.current[index] = el; }}
+              className="relative rounded-xl border shadow-sm bg-white dark:bg-gray-800 overflow-hidden hover-animate w-full"
+            >
+              {loadingCards[card._id] ? (
+                <div className="h-full w-full flex items-center justify-center min-h-[220px] bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <div
+                    role="status"
+                    aria-label="Loading"
+                    className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-brand-500"
+                  ></div>
+                </div>
+              ) : card.scratched === 0 ? (
+                <div className="p-4 relative z-10 w-full">
+                  {cardDimensions[index] && (
+                    <ScratchCard
+                      key={`${card._id}-${cardDimensions[index].width}`}
+                      width={cardDimensions[index].width}
+                      height={cardDimensions[index].height}
+                      image="/images/scratch-cover-full.svg"
+                      finishPercent={65}
+                      brushSize={50}
+                      onComplete={() => handleScratchComplete(card._id)}
+                    >
+                      <div className="flex flex-col items-center justify-center h-full bg-gradient-to-r from-brand-100 to-brand-50 dark:from-brand-900 dark:to-brand-800">
+                        <div className="text-[clamp(1.5rem,5vw,2.25rem)] font-bold text-brand-600 dark:text-brand-400 mb-2">
+                          ₹{parseFloat(card.amount.$numberDecimal).toFixed(2)}
+                        </div>
+                        <div className="text-sm text-gray-600 dark:text-gray-400">
+                          Scratch to reveal your reward!
+                        </div>
                       </div>
-                      <div className="text-sm text-gray-600 dark:text-gray-400">
-                        Scratch to reveal your reward!
-                      </div>
-                    </div>
-                  </ScratchCard>
+                    </ScratchCard>
+                  )}
                 </div>
               ) : (
                 <motion.div
@@ -252,7 +302,8 @@ export default function ScratchCards() {
                     <motion.span
                       className={`px-3 py-1 rounded-full text-xs font-semibold tracking-wide ${card.redeemed === 1
                         ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100'
-                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'}`}
+                        : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100'
+                        }`}
                       initial={{ y: 20, opacity: 0 }}
                       animate={{ y: 0, opacity: 1 }}
                       transition={{ delay: 0.3 }}
@@ -282,14 +333,21 @@ export default function ScratchCards() {
                     <div className="flex items-center justify-center space-x-2">
                       <span>Code: </span>
                       <div className="relative flex items-center">
-                        <span className="font-mono text-gray-800 dark:text-gray-100">{card.coupon_code}</span>
-                        <button onClick={() => handleCopyCode(card.coupon_code)} className="ml-2 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                        <span className="font-mono text-gray-800 dark:text-gray-100">
+                          {card.coupon_code}
+                        </span>
+                        <button
+                          onClick={() => handleCopyCode(card.coupon_code)}
+                          className="ml-2 p-1 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                        >
                           {copiedCode === card.coupon_code ? '✅' : '📋'}
                         </button>
                       </div>
                     </div>
                     <div>Valid for {card.validity} days</div>
-                    <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">Created: {new Date(card.createdAt).toLocaleDateString()}</div>
+                    <div className="mt-1 text-xs text-gray-400 dark:text-gray-500">
+                      Created: {new Date(card.createdAt).toLocaleDateString()}
+                    </div>
                   </motion.div>
                 </motion.div>
               )}
@@ -299,12 +357,21 @@ export default function ScratchCards() {
       ) : (
         <div className="text-center py-10 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
           <div className="mb-4">
-            <Image src="/images/empty-rewards.svg" alt="No Rewards" width={120} height={120} className="mx-auto" />
+            <Image
+              src="/images/empty-rewards.svg"
+              alt="No Rewards"
+              width={120}
+              height={120}
+              className="mx-auto"
+            />
           </div>
           <p className="text-lg font-medium">No scratch cards yet</p>
-          <p className="text-sm mt-2">Start participating in rewards to earn scratch cards!</p>
+          <p className="text-sm mt-2">
+            Start participating in rewards to earn scratch cards!
+          </p>
         </div>
       )}
     </div>
   );
+
 }

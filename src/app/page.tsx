@@ -6,13 +6,27 @@ import Header from '@/components/home/Header';
 import Footer from '@/components/home/Footer';
 import ScrollAnimation from '@/components/common/ScrollAnimation';
 import TermsModal from '@/components/common/TermsModal';
+import Carousel from '@/components/carousel/carousel';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
 export default function HomePage() {
+    const images = [
+        "/images/partners/flot.svg",
+        "/images/partners/ok-credit.svg",
+        "/images/partners/fusion-finance.svg",
+        "/images/partners/idfc.svg",
+        "/images/partners/ramfin.svg",
+         "/images/partners/south-indian-bank.svg",
+          "/images/partners/stashfin.svg",
+           "/images/partners/tvs-credit.svg",
+       
+
+
+    ];
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     // const [isVisible, setIsVisible] = useState(false);
     const handleAcceptTerms = () => {
         setAcceptedTerms(true);
@@ -86,17 +100,17 @@ export default function HomePage() {
 
                 setFormData({ firstName: '', lastName: '', phone: '', email: '', message: '' });
                 setAcceptedTerms(false);
-                            setIsSubmitting(false);
+                setIsSubmitting(false);
 
             } else {
                 toast.error(result.message || "Something went wrong!");
-                  setIsSubmitting(false);
+                setIsSubmitting(false);
 
             }
         } catch (error) {
             console.log("Error submitting inquiry:", error);
             toast.error("Network error. Please try again later.");
-              setIsSubmitting(false);
+            setIsSubmitting(false);
         }
     };
     // useEffect(() => {
@@ -411,46 +425,30 @@ export default function HomePage() {
                     </div>
                 </section>
                 {/* Partners Section */}
+
                 <section className="py-2 bg-gray-50 dark:bg-gray-800 shadow-inner-top">
-                    <div className="relative min-h-[200px] mt-1">
-                        {/* Cat Background Image aligned to the right */}
-                        <div className="absolute inset-0 z-0 flex justify-end items-start pr-4">
-                            <Image
-                                src="/images/cat_black.svg"
-                                alt="Decorative background"
-                                width={900}
-                                height={200}
-                                className="object-cover rounded-3xl animate-float"
-                            />
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl"> {/* Increased max-width */}
+                        <div className="flex flex-col md:flex-row items-center gap-12"> {/* Flex container */}
+                            <div className="w-full">
+                                <ScrollAnimation animation="fade" className="mb-12" delay={400}>
+                                    <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 animate-fadeIn">
+                                        Ours Partners:  <span className="gradient-text animate-gradient">Building Value Together</span>
+                                    </h2>
+                                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed animate-fadeIn" style={{ animationDelay: '0.6s' }}>
+                                        At RepayKaro, we believe in turning debt recovery into a rewarding experience — not just for creditors, but for customers too. That’s why we collaborate with leading brands and online platforms to offer exclusive incentives to customers who repay their dues on time.
+                                    </p>
+                                    <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed animate-fadeIn" style={{ animationDelay: '0.6s' }}>
 
+                                        By partnering with RepayKaro, brands get access to a high-intent, verified user base, while customers enjoy meaningful rewards like coupons, cashback offers, and vouchers — making repayments a more positive and engaging journey.
+                                    </p>
+                                    <div className="mt-8 animate-fadeIn" style={{ animationDelay: '0.8s' }}>
+                                        <Carousel images={images} />
+                                    </div>
+                                </ScrollAnimation>
+
+
+                            </div>
                         </div>
-
-                        {/* Content Container (positioned above background) */}
-                        <div className="relative p-8 md:p-12 max-w-2xl">
-                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4 animate-fadeIn">
-                                Our Partners: <span className="gradient-text animate-gradient">Coming Soon ...</span>
-                            </h2>
-                            <p
-                                className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed animate-fadeIn"
-                                style={{ animationDelay: '0.6s' }}
-                            >
-                                Get back to us soon to see our partners who are helping us in this journey of debt recovery. We are working
-                                with various financial institutions and businesses to provide the best services to our customers.
-                            </p>
-                        </div>
-
-                        {/* Animation Style */}
-                        <style jsx global>{`
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0) scale(0.9);
-        }
-        50% {
-          transform: translateY(-20px) scale(1);
-        }
-      }
-    `}</style>
                     </div>
                 </section>
 
@@ -542,7 +540,7 @@ export default function HomePage() {
                                             value={formData.email}
                                             onChange={handleChange}
                                             className={`mt-1 block w-full rounded-xl shadow-sm p-3 sm:text-sm dark:bg-gray-700 dark:text-white border-2 ${errors.email
-                                               ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
+                                                ? 'border-red-500 focus:ring-red-500 focus:border-red-500'
                                                 : 'border-gray-300 focus:ring-purple-500 focus:border-purple-500 dark:border-gray-600'
                                                 }`}
                                         />
@@ -603,9 +601,9 @@ export default function HomePage() {
                                                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                                                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2.93-6.364A8.001 8.001 0 0112 4v4c-2.21 0-4.21.895-5.657 2.343l2.586-2.586z"></path>
                                             </svg>
-                                        ): (
+                                        ) : (
                                             'Start Your Project')}
-                                       
+
                                     </button>
                                 </div>
                             </form>
