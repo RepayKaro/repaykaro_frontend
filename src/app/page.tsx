@@ -7,8 +7,11 @@ import Footer from '@/components/home/Footer';
 import ScrollAnimation from '@/components/common/ScrollAnimation';
 import TermsModal from '@/components/common/TermsModal';
 import Carousel from '@/components/carousel/carousel';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import { useTheme } from '@/context/ThemeContext';
+
+
 
 export default function HomePage() {
     const images = [
@@ -17,17 +20,30 @@ export default function HomePage() {
         "/images/partners/fusion-finance.svg",
         "/images/partners/idfc.svg",
         "/images/partners/ramfin.svg",
-         "/images/partners/south-indian-bank.svg",
-          "/images/partners/stashfin.svg",
-           "/images/partners/tvs-credit.svg",
-       
-
+        "/images/partners/south-indian-bank.svg",
+        "/images/partners/stashfin.svg",
+        "/images/partners/tvs-credit.svg",
+        "/images/partners/kr.svg",
+    ];
+    const imagesWhite = [
+        "/images/partners/flot-white.svg",
+        "/images/partners/ok-credit.svg",
+        "/images/partners/fusion-finance.svg",
+        "/images/partners/idfc-white.svg",
+        "/images/partners/ramfin.svg",
+        "/images/partners/south-indian-bank.svg",
+        "/images/partners/stashfin-white.svg",
+        "/images/partners/tvs-credit.svg",
+        "/images/partners/kr.svg",
 
     ];
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     // const [isVisible, setIsVisible] = useState(false);
+    const { theme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
     const handleAcceptTerms = () => {
         setAcceptedTerms(true);
         setIsModalOpen(false);
@@ -133,6 +149,11 @@ export default function HomePage() {
     //     return () => window.removeEventListener('scroll', handleScroll);
     // }, []);
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return null;
     return (
         <div className="min-h-screen flex flex-col">
 
@@ -442,7 +463,7 @@ export default function HomePage() {
                                         By partnering with RepayKaro, brands get access to a high-intent, verified user base, while customers enjoy meaningful rewards like coupons, cashback offers, and vouchers — making repayments a more positive and engaging journey.
                                     </p>
                                     <div className="mt-8 animate-fadeIn" style={{ animationDelay: '0.8s' }}>
-                                        <Carousel images={images} />
+                                        <Carousel images={theme === "dark" ? images : imagesWhite} />
                                     </div>
                                 </ScrollAnimation>
 

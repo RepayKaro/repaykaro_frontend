@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="25" height="50" viewBox="0 0 225 50">
+    
+    <g fill="none" fill-rule="evenodd">
+         <rect width="40" height="40" fill="#2563eb" rx="5" />
+  
+ 
+  
+  <!-- KR text centered -->
+  <text x="20" y="22" font-family="Arial" font-size="20" font-weight="bold" fill="white" text-anchor="middle" dominant-baseline="middle">KR</text>
+        
+        <text fill="#666" font-family="Futura-Medium, Futura" font-size="24" font-weight="400">
+            <tspan x="40" y="28">CorpLink</tspan>
+        </text>
+        <text fill="#999" font-family="Helvetica-Light, Helvetica" font-size="14" font-weight="300">
+            <tspan x="61" y="45">Connecting Minds</tspan>
+        </text>
+    </g>
+</svg>
