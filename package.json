@@ -37,6 +37,8 @@
     "jsonwebtoken": "^9.0.2",
     "keen-slider": "^6.8.6",
     "lucide-react": "^0.522.0",
+    "motion": "^12.23.0",
+    "motion-plus": "^1.4.1",
     "next": "15.2.3",
     "next-scratchcard": "^0.0.4",
     "react": "^19.0.0",
