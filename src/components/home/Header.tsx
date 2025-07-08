@@ -115,7 +115,7 @@ const Header = () => {
                 href="tel:+918178953143"
                 className="inline-flex items-center px-4 py-2.5 border border-purple-600 text-sm font-medium rounded-full text-purple-600 hover:bg-purple-50 dark:border-purple-400 dark:text-purple-400 dark:hover:bg-purple-900 transition-all duration-300 transform hover:scale-105 hover:shadow-lg rounded-2xl active:scale-95 active:shadow-inner"
               >
-                +91 81789531431
+                Call Us
               </Link>
               {/* <Link
                 href="/signin"

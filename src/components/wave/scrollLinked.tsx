@@ -22,7 +22,7 @@ const ScrollLinked = () => {
                     top: 0,
                     left: 0,
                     right: 0,
-                    height: 8,
+                    height: 3,
                     originX: 0,
                     backgroundImage: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%)",
                     zIndex: 50,

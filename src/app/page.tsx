@@ -10,7 +10,7 @@ import Carousel from '@/components/carousel/carousel';
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { useTheme } from '@/context/ThemeContext';
-import WavyText from '@/components/wave/page'; // Assuming WavyText is in the wave folder   
+// import WavyText from '@/components/wave/page'; // Assuming WavyText is in the wave folder   
 // import MouseCursor from '@/components/wave/cursor'; // Assuming cursor is in the wave folder 
 import ScrollLinked from '@/components/wave/scrollLinked'; // Assuming scrollLinked is in the wave folder   
 
@@ -193,13 +193,14 @@ export default function HomePage() {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                             <ScrollAnimation animation="slideLeft" className="space-y-8" delay={300}>
                                 <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight animate-fadeIn">
-                                    <WavyText className="test" text="Simplify Your" />
+                                    {/* <WavyText className="test" text="Simplify Your" /> */}
+                                     <span className="animate-gradient">Simplify Your</span>
                                     {' '}
-                                    <span className="animate-gradient">Loan Repayment</span>
+                                    <span className="gradient-text animate-gradient">Loan Repayment</span>
 
 
                                     <br />
-                                    <span className="gradient-text  inline-block animate-bounce-subtle">with RepayKaro</span>
+                                    <span className="inline-block animate-bounce-subtle">with RepayKaro</span>
                                 </h1>
                                 <Stylesheet />
                                 <p className="text-xl text-gray-600 dark:text-gray-300 leading-relaxed animate-fadeIn" style={{ animationDelay: '0.5s' }}>
