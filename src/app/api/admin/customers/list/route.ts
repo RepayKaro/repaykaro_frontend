@@ -6,9 +6,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL
 export async function GET(request: NextRequest) {
   try {
     // Get admin token from cookies
-    const adminToken = (await cookies()).get('admin_token')?.value;
-    // const adminToken = request.cookies.get('admin_token')?.value
-    // console.log('adminToken', adminToken);
+    const adminToken = (await cookies()).get('admin_token')?.value;  
 
     if (!adminToken) {
       return NextResponse.json(
@@ -18,7 +16,6 @@ export async function GET(request: NextRequest) {
     }
     // Get query parameters
     const searchParams = request.nextUrl.searchParams;
-    console.log("searchParams", searchParams);
     const page = searchParams.get('page') || '1';
     const perPage = searchParams.get('perPage') || '10';
     const filter = searchParams.get('status') || '-1';
@@ -55,7 +52,7 @@ export async function GET(request: NextRequest) {
 
     const data = await response.json();
 
-    // console.log('response',data);
+     console.log('response',data);
 
     if (data && !data.isAuthorized) {
       return NextResponse.json(data);

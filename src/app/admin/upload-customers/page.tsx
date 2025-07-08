@@ -12,7 +12,6 @@ import StatusIcon from "@/components/common/Icon";
 import { ArrowUpIcon, ArrowDownIcon } from "@/icons";
 import Image from 'next/image';
 
-
 const REQUIRED_HEADERS = [
     'customer',
     'phone',
@@ -25,6 +24,8 @@ const REQUIRED_HEADERS = [
     'payment_url',
     'lender_name'
 ];
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
 export default function UploadCustomersPage() {
     const [excelFile, setExcelFile] = useState<File | null>(null);
@@ -47,33 +48,39 @@ export default function UploadCustomersPage() {
         }
     }, [admin, isLoading]);
 
-    if (isLoading) return <PageLoader />; // optional loader
+    const handleDrop = (acceptedFiles: File[], rejectedFiles: import('react-dropzone').FileRejection[]) => {
+        if (rejectedFiles.length > 0) {
+            const rejection = rejectedFiles[0];
+            if (rejection.errors[0].code === 'file-too-large') {
+                toast.error('File size exceeds 5MB limit');
+            } else {
+                toast.error('Invalid file type. Only Excel files are accepted.');
+            }
+            return;
+        }
 
-    if (!isAuthorized) {
-        return <UnauthorizedComponent />;
-    }
-
-    // Custom DropZone for Excel files
-    const handleDrop = (acceptedFiles: File[]) => {
         if (acceptedFiles && acceptedFiles.length > 0) {
-            setExcelFile(acceptedFiles[0]);
+            const file = acceptedFiles[0];
+            if (file.size > MAX_FILE_SIZE) {
+                toast.error('File size exceeds 5MB limit');
+                return;
+            }
+
+            setExcelFile(file);
             setScanStatus('scanning');
             setScanError(null);
             setMissingHeaders([]);
             setApiMessage(null);
             setApiSuccess(null);
-            // Wait 2.5 seconds before validating
+
             setTimeout(() => {
-                validateExcelHeaders(acceptedFiles[0]);
+                validateExcelHeaders(file);
             }, 2500);
         }
     };
 
-    // Validate Excel headers
     const validateExcelHeaders = async (file: File) => {
         setScanStatus('scanning');
-        setScanError(null);
-        setMissingHeaders([]);
         try {
             const data = await file.arrayBuffer();
             const workbook = XLSX.read(data, { type: 'array' });
@@ -83,6 +90,7 @@ export default function UploadCustomersPage() {
             const headerRow = Array.isArray(json[0]) ? json[0] : json[0] ? Object.values(json[0]) : [];
             const headers = headerRow.map((h: string) => (typeof h === 'string' ? h.trim() : h));
             const missing = REQUIRED_HEADERS.filter(h => !headers.includes(h));
+
             if (missing.length > 0) {
                 setScanStatus('error');
                 setMissingHeaders(missing);
@@ -101,15 +109,22 @@ export default function UploadCustomersPage() {
             toast.error("Please select an Excel file to upload.");
             return;
         }
+        if (excelFile.size > MAX_FILE_SIZE) {
+            toast.error("File size exceeds 5MB limit");
+            return;
+        }
         if (scanStatus !== 'success') {
             toast.error("Please upload a valid Excel file with correct headers.");
             return;
         }
+
         setIsUploading(true);
         setApiMessage(null);
         setApiSuccess(null);
+
         const formData = new FormData();
         formData.append("file", excelFile);
+
         try {
             const response = await fetch("/api/admin/customers/uploadCustomers", {
                 method: "POST",
@@ -117,15 +132,15 @@ export default function UploadCustomersPage() {
                 credentials: "include",
             });
             const data = await response.json();
+
             if (!response.ok || data.success === false) {
                 setApiSuccess(false);
                 setApiMessage(data.message || "Failed to upload Excel file.");
-                // If missingHeaders in response, show them
                 if (data.missingHeaders && Array.isArray(data.missingHeaders)) {
                     setMissingHeaders(data.missingHeaders);
                 }
                 setScanStatus('error');
-                setExcelFile(null); // Remove chosen file
+                setExcelFile(null);
             } else {
                 setApiSuccess(true);
                 setApiMessage(data.message || "Upload successful!");
@@ -142,7 +157,6 @@ export default function UploadCustomersPage() {
         }
     };
 
-    // Custom DropZone for Excel files only
     const CustomDropZone = () => {
         const { getRootProps, getInputProps, isDragActive } = useDropzone({
             onDrop: handleDrop,
@@ -151,27 +165,34 @@ export default function UploadCustomersPage() {
                 "application/vnd.ms-excel": [],
             },
             multiple: false,
+            maxSize: MAX_FILE_SIZE,
         });
+
         return (
-            <div {...getRootProps()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer ${isDragActive ? "border-brand-500 bg-gray-100 dark:bg-gray-800" : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"}`}>
+            <div {...getRootProps()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer ${isDragActive ? "border-brand-500 bg-gray-100 dark:bg-gray-800"
+                    : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
+                }`}>
                 <input {...getInputProps()} />
                 <h4 className="mb-2 font-semibold text-gray-800 text-theme-xl dark:text-white/90">
                     {isDragActive ? "Drop Excel File Here" : "Drag & Drop Excel File Here"}
                 </h4>
                 <span className="block text-sm text-gray-700 dark:text-gray-400 mb-2">
-                    Only .xlsx or .xls files are accepted
+                    Only .xlsx or .xls files (max 5MB)
                 </span>
                 <span className="font-medium underline text-theme-sm text-brand-500">
                     Browse File
                 </span>
                 {excelFile && (
                     <div className="mt-4 text-sm text-gray-600 dark:text-gray-300 truncate max-w-full">
-                        Selected: {excelFile.name}
+                        Selected: {excelFile.name} ({(excelFile.size / 1024 / 1024).toFixed(2)} MB)
                     </div>
                 )}
             </div>
         );
     };
+
+    if (isLoading) return <PageLoader />;
+    if (!isAuthorized) return <UnauthorizedComponent />;
 
     return (
         <div>
@@ -182,16 +203,14 @@ export default function UploadCustomersPage() {
                     download
                     className="inline-flex items-center px-5 py-3 justify-center gap-1 rounded-full font-medium text-sm bg-blue-light-100 text-blue-light-500 dark:bg-blue-light-500/15 dark:text-blue-light-500"
                 >
-                    <ArrowDownIcon className="w-5 " />
+                    <ArrowDownIcon className="w-5" />
                     Download Sample Excel
                 </a>
-
             </div>
+
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 w-full max-w-5xl mx-auto">
-                {/* Left: DropZone Card */}
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl flex flex-col min-h-[340px] p-8 w-full h-full relative">
                     <CustomDropZone />
-
                     <div className="absolute bottom-6 right-6">
                         <Button
                             onClick={handleUpload}
@@ -204,28 +223,28 @@ export default function UploadCustomersPage() {
                     </div>
                 </div>
 
-                {/* Right: Scan/Validation Card */}
-                {/* {alert("hi")} */}
-
                 <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl flex flex-col items-center justify-center min-h-[340px] p-8 w-full h-full relative overflow-hidden">
-                    {/* API compliment or error message */}
-
                     {apiSuccess === true && apiMessage && (
                         <div className="text-emerald-500 font-bold text-lg flex flex-col items-center justify-center h-full">
-                            {<StatusIcon type="pass" className="w-24 h-24  mx-auto relative z-10" />}<br></br>
+                            <StatusIcon type="pass" className="w-24 h-24 mx-auto relative z-10" />
                             <span className="text-3xl mb-2">🎉</span>
                             {apiMessage}
                         </div>
                     )}
+
                     {apiSuccess === false && apiMessage && (
                         <div className="text-red-500 font-semibold text-center flex flex-col items-center gap-2">
-                            <div>{<StatusIcon type="fail" className="w-24 h-24  mx-auto relative z-10" />}<br></br>{apiMessage}</div>
+                            <div>
+                                <StatusIcon type="fail" className="w-24 h-24 mx-auto relative z-10" />
+                                <br />
+                                {apiMessage}
+                            </div>
                             {missingHeaders.length > 0 && (
                                 <div className="mt-2 text-xs text-red-400">Missing: {missingHeaders.join(', ')}</div>
                             )}
                         </div>
                     )}
-                    {/* Default scanning/validation UI if no API result */}
+
                     {apiSuccess === null && (
                         <>
                             {isUploading ? (
@@ -239,28 +258,34 @@ export default function UploadCustomersPage() {
                                         <div className="relative flex flex-col items-center justify-center w-full h-full">
                                             <Image
                                                 src="/images/white.gif"
-                                                alt="Decorative background"
-                                                 width={372}
-                                    height={472}
-                                                className="object-cover rounded-3xl animate-float dark:hidden "
-
+                                                alt="Scanning file"
+                                                width={372}
+                                                height={472}
+                                                className="object-cover rounded-3xl animate-float dark:hidden"
                                             />
                                             <Image
                                                 src="/images/black.gif"
-                                                alt="Decorative background"
+                                                alt="Scanning file"
                                                 width={372}
-                                    height={472}
-                                                className="hidden object-cover rounded-3xl animate-float dark:block "
-
+                                                height={472}
+                                                className="hidden object-cover rounded-3xl animate-float dark:block"
                                             />
                                         </div>
                                     )}
                                     {scanStatus === 'success' && (
-                                        <span className="text-emerald-500 font-semibold text-lg">{<StatusIcon type="success" className="w-24 h-24  mx-auto relative z-10" />}<br></br>Excel headers are valid!</span>
+                                        <span className="text-emerald-500 font-semibold text-lg">
+                                            <StatusIcon type="success" className="w-24 h-24 mx-auto relative z-10" />
+                                            <br />
+                                            Excel headers are valid!
+                                        </span>
                                     )}
                                     {scanStatus === 'error' && (
                                         <div className="text-red-500 font-semibold text-center flex flex-col items-center gap-2">
-                                            <div>{<StatusIcon type="fail" className="w-24 h-24  mx-auto relative z-10" />}<br></br>Excel header validation failed.</div>
+                                            <div>
+                                                <StatusIcon type="fail" className="w-24 h-24 mx-auto relative z-10" />
+                                                <br />
+                                                Excel header validation failed.
+                                            </div>
                                             {scanError && <div>{scanError}</div>}
                                             {missingHeaders.length > 0 && (
                                                 <div className="mt-2 text-xs text-red-400">Missing: {missingHeaders.join(', ')}</div>
@@ -275,4 +300,4 @@ export default function UploadCustomersPage() {
             </div>
         </div>
     );
-} 
+}
