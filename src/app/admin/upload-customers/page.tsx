@@ -37,6 +37,9 @@ export default function UploadCustomersPage() {
     const [apiSuccess, setApiSuccess] = useState<boolean | null>(null);
     const [isAuthorized, setIsAuthorized] = useState(false);
     const { admin, isLoading } = useAuth();
+    useEffect(() => {
+        document.title = 'Upload Customer | RepayKaro';
+    }, []);
 
     useEffect(() => {
         if (!isLoading && admin?.permissions) {
@@ -170,7 +173,7 @@ export default function UploadCustomersPage() {
 
         return (
             <div {...getRootProps()} className={`border-2 border-dashed rounded-xl p-8 text-center cursor-pointer ${isDragActive ? "border-brand-500 bg-gray-100 dark:bg-gray-800"
-                    : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
+                : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
                 }`}>
                 <input {...getInputProps()} />
                 <h4 className="mb-2 font-semibold text-gray-800 text-theme-xl dark:text-white/90">

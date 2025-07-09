@@ -2,14 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-// import Image from 'next/image';
+import Image from 'next/image';
 import { useAuth } from '@/context/AuthContext';
 import { ThemeToggleButton } from '../common/ThemeToggleButton';
 import UploadModal from '../dashboard/UploadModal';
 import { toast } from 'react-hot-toast';
+import { useTheme } from '@/context/ThemeContext';
 
 
 const Header = () => {
+  const { theme } = useTheme();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, loading, logout } = useAuth();
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -64,7 +67,12 @@ const Header = () => {
           <div className="flex-shrink-0 transform hover:scale-105 transition-transform duration-300">
             <Link href="/" className="block p-2 rounded-2xl">
               <span className="font-bold text-xl sm:text-2xl lg:text-3xl gradient-text dark:gradient-text transition-colors duration-300">
-                RepayKaro
+               <Image
+                    src={theme === "dark" ? "/images/logo/rpk-new.png" : "/images/logo/rpk.png"}
+                    alt="RepayKaro"
+                    width={150}
+                    height={10}
+                  />
               </span>
             </Link>
           </div>
@@ -103,7 +111,12 @@ const Header = () => {
             <div className="flex-shrink-0 transform hover:scale-105 transition-transform duration-300">
               <Link href="/" className="block p-2 rounded-2xl">
                 <span className="font-bold text-xl sm:text-2xl lg:text-3xl gradient-text dark:gradient-text transition-colors duration-300">
-                  RepayKaro
+                  <Image
+                    src={theme === "dark" ? "/images/logo/rpk-new.png" : "/images/logo/rpk.png"}
+                    alt="RepayKaro"
+                    width={150}
+                    height={10}
+                  />
                 </span>
               </Link>
             </div>
@@ -157,7 +170,12 @@ const Header = () => {
           <div className="flex-shrink-0 transform hover:scale-105 transition-transform duration-300">
             <Link href="/" className="block p-2 rounded-2xl">
               <span className="font-bold text-xl sm:text-2xl lg:text-3xl gradient-text dark:gradient-text transition-colors duration-300">
-                RepayKaro
+               <Image
+                    src={theme === "dark" ? "/images/logo/rpk-new.png" : "/images/logo/rpk.png"}
+                    alt="RepayKaro"
+                    width={150}
+                    height={10}
+                  />
               </span>
             </Link>
           </div>

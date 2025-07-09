@@ -9,8 +9,8 @@ import MonthlySalesChart from "@/components/ecommerce/MonthlySalesChart";
 
 export const metadata: Metadata = {
   title:
-    "Next.js E-commerce Dashboard | RepayKaro - Next.js Dashboard Template",
-  description: "This is Next.js Home for RepayKaro Dashboard Template",
+    "Dashboard | RepayKaro",
+  description: "Admin Dashboard | RepayKaro",
 };
 
 export default function Ecommerce() {

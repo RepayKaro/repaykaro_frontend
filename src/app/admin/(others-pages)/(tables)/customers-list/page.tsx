@@ -4,9 +4,9 @@ import { Metadata } from "next";
 import React from "react";
 
 export const metadata: Metadata = {
-  title: "Customers List | RepayKaro - Dashboard",
+  title: "Customers List | RepayKaro",
   description:
-    "This is Customers List page for RepayKaro Admin Dashboard",
+    "Customers list",
   // other metadata
 };
 

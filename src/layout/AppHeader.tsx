@@ -3,11 +3,14 @@ import { ThemeToggleButton } from "@/components/common/ThemeToggleButton";
 // import NotificationDropdown from "@/components/header/NotificationDropdown";
 import UserDropdown from "@/components/header/UserDropdown";
 import { useSidebar } from "@/context/SidebarContext";
-// import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
-import React, { useState ,useEffect,useRef} from "react";
+import { useTheme } from '@/context/ThemeContext';
+
+import React, { useState, useEffect, useRef } from "react";
 
 const AppHeader: React.FC = () => {
+  const { theme } = useTheme();
   const [isApplicationMenuOpen, setApplicationMenuOpen] = useState(false);
 
   const { isMobileOpen, toggleSidebar, toggleMobileSidebar } = useSidebar();
@@ -87,7 +90,14 @@ const AppHeader: React.FC = () => {
             <Link href="/admin" className="flex items-center lg:hidden">
               <div className="flex items-center">
                 <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-400 bg-clip-text text-transparent">
-                  RepayKaro
+                  <Image
+                    src={theme === "dark" ? "/images/logo/rpk-new.png" : "/images/logo/rpk.png"}
+                    alt="RepayKaro"
+                    width={200}
+                    height={200}
+                    className="mb-6 opacity-90 ml-16"
+                  />
+
                 </span>
               </div>
             </Link>
@@ -149,21 +159,20 @@ const AppHeader: React.FC = () => {
           </div> */}
         </div>
         <div
-          className={`${
-            isApplicationMenuOpen ? "flex" : "hidden"
-          } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
+          className={`${isApplicationMenuOpen ? "flex" : "hidden"
+            } items-center justify-between w-full gap-4 px-5 py-4 lg:flex shadow-theme-md lg:justify-end lg:px-0 lg:shadow-none`}
         >
           <div className="flex items-center gap-2 2xsm:gap-3">
             {/* <!-- Dark Mode Toggler --> */}
             <ThemeToggleButton />
             {/* <!-- Dark Mode Toggler --> */}
 
-           {/* <NotificationDropdown />  */}
+            {/* <NotificationDropdown />  */}
             {/* <!-- Notification Menu Area --> */}
           </div>
           {/* <!-- User Area --> */}
-          <UserDropdown /> 
-    
+          <UserDropdown />
+
         </div>
       </div>
     </header>

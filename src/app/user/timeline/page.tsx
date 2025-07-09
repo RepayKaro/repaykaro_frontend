@@ -30,6 +30,10 @@ interface Timeline {
 
 
 export default function Home() {
+    const { user } = useAuth();
+    useEffect(() => {
+        document.title = user ? `Activity - ${user?.customer} | RepayKaro` : 'Activity | RepayKaro';
+    }, [user]);
     // const icons = [
     //     UserIcon,
     //     CheckCircleIcon,
@@ -39,7 +43,7 @@ export default function Home() {
     //     StarIcon, ClockIcon
     // ];
     const hasFetched = useRef(false);
-    const { user } = useAuth();
+
     const [timeline, setTimeline] = useState<Timeline[]>([]);
     const [loading, setLoading] = useState(true);
 

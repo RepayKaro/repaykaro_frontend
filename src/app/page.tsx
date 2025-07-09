@@ -18,6 +18,9 @@ import ScrollLinked from '@/components/wave/scrollLinked'; // Assuming scrollLin
 
 
 export default function HomePage() {
+      useEffect(() => {
+    document.title ='Rewards | RepayKaro';
+  }, []);
     const Stylesheet = () => (
         <style>{`
     

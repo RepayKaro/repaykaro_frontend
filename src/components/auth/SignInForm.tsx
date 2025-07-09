@@ -12,8 +12,9 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Header from '@/components/home/Header';
-
+import { useTheme } from '@/context/ThemeContext';
 export default function SignInForm() {
+    const { theme } = useTheme();
   const router = useRouter();
   const { login } = useAuth();
   const [mobileNumber, setMobileNumber] = useState("");
@@ -307,13 +308,20 @@ export default function SignInForm() {
             transition={{ duration: 0.6, delay: 0.4 }}
           >
             {/* You can replace this with an actual illustration */}
-            <Image
+           <Image
+                           src={theme === "dark" ? "/images/logo/rpk-new.png" : "/images/logo/rpk.png"}
+                           alt="RepayKaro"
+                           width={200}
+                           height={200}
+                            className="mb-6 opacity-90 ml-16"
+                         />
+                          {/* <Image
               src="/images/brand/brand-01.svg" // Placeholder image, replace with your own
               alt="Welcome Illustration"
               width={200}
               height={200}
               className="mb-6 opacity-90 ml-16"
-            />
+            /> */}
             <h2 className="font-bold text-3xl sm:text-4xl mb-4 leading-tight">
               Manage Your Finances with Ease!
             </h2>

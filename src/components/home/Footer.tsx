@@ -4,8 +4,11 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 const MOBILE_WHATSAPP = process.env.NEXT_PUBLIC_COMPANY_MOBILE_WHATSAPP;
+import { useTheme } from '@/context/ThemeContext';
 
 const Footer = () => {
+  const { theme } = useTheme();
+
   const [isVisible, setIsVisible] = useState(false);
   const [isPulsing, setIsPulsing] = useState(false);
 
@@ -55,7 +58,12 @@ const Footer = () => {
           <div className="min-h-[150px]">
             <Link href="/" className="inline-block mb-4">
               <span className="font-bold text-3xl gradient-text dark:gradient-text transition-colors duration-300">
-                RepayKaro
+                <Image
+                  src={theme === "dark" ? "/images/logo/rpk-new.png" : "/images/logo/rpk.png"}
+                  alt="RepayKaro"
+                  width={250}
+                  height={10}
+                />
               </span>
             </Link>
             <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed">

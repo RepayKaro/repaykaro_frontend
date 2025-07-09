@@ -16,8 +16,8 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: 'RepayKaro Dashboard',
-  description: 'RepayKaro user dashboard for loan management',
+  title: 'RepayKaro Home',
+  description: 'RepayKaro for loan management',
 };
 
 export default function RootLayout({

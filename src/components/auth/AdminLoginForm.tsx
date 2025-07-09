@@ -11,12 +11,14 @@ import { useAuth } from '@/context/AuthContext';
 import { useRouter } from "next/navigation";
 import Image from "next/image"; // Import Image for potential illustrations
 import Header from '@/components/home/Header';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function AdminLoginForm() {
+  const { theme } = useTheme();
   const router = useRouter();
   const { login } = useAuth();
-  const [email, setEmail] = useState("gaurav@gmail.com");
-  const [password, setPassword] = useState("admin@123");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -197,13 +199,13 @@ export default function AdminLoginForm() {
               transition={{ duration: 0.6, delay: 0.4 }}
             >
               {/* You can replace this with an actual admin illustration */}
-              <Image
-                src="/images/brand/brand-01.svg" // Placeholder image, replace with your own
-                alt="Admin Welcome Illustration"
-                width={200}
-                height={200}
-                className="mb-6 opacity-90 ml-16"
-              />
+                 <Image
+                                         src={theme === "dark" ? "/images/logo/rpk-new.png" : "/images/logo/rpk.png"}
+                                         alt="RepayKaro"
+                                         width={200}
+                                         height={200}
+                                          className="mb-6 opacity-90 ml-16"
+                                       />
               <h2 className="font-bold text-3xl sm:text-4xl mb-4 leading-tight">
                 Admin Dashboard Access
               </h2>

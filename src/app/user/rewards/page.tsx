@@ -4,16 +4,18 @@ import ScratchCards from '@/components/dashboard/ScratchCards';
 import WelcomeHeader from '@/components/dashboard/WelcomeHeader';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import { User } from '@/types/User'; // import your User type
+import {  useEffect } from 'react';
 
 import { useAuth } from '@/context/AuthContext';
-import Head from 'next/head';
 export default function RewardsPage() {
   const { user } = useAuth();
+ 
+  useEffect(() => {
+    document.title = user ? `Rewards - ${user?.customer} | RepayKaro` : 'Rewards | RepayKaro';
+  }, [user]);
   return (
     <DashboardLayout>
-      <Head>
-        <title>Rewards</title>
-      </Head>
+     
       <main className="flex-1 flex flex-col">
           <div className="sticky top-0 z-20 bg-white dark:bg-gray-900 shadow-sm border-b border-gray-200 dark:border-gray-800">
             <WelcomeHeader user={user as unknown as User} />

@@ -17,6 +17,8 @@ import {
 } from "../icons/index";
 import SidebarWidget from "./SidebarWidget";
 import { usePermissions } from '@/hooks/usePermissions';
+import Image from "next/image";
+import { useTheme } from '@/context/ThemeContext';
 
 
 type NavItem = {
@@ -27,6 +29,7 @@ type NavItem = {
 };
 
 const AppSidebar: React.FC = () => {
+  const { theme } = useTheme();
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const pathname = usePathname();
   const { canAccess, isLoading } = usePermissions();
@@ -225,7 +228,7 @@ const AppSidebar: React.FC = () => {
                 </div>
               )}
             </li>
-            
+
           );
         })}
       </ul>
@@ -318,7 +321,14 @@ const AppSidebar: React.FC = () => {
           {isExpanded || isHovered || isMobileOpen ? (
             <div className="flex items-center">
               <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-blue-400 bg-clip-text text-transparent">
-                RepayKaro
+
+                <Image
+                  src={theme === "dark" ? "/images/logo/rpk-new.png" : "/images/logo/rpk.png"}
+                  alt="RepayKaro"
+                  width={250}
+                  height={10}
+                />
+
               </span>
             </div>
           ) : (
@@ -370,7 +380,7 @@ const AppSidebar: React.FC = () => {
         {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
       </div>
 
-      
+
     </aside>
   );
 };
