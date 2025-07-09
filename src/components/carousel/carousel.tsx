@@ -56,7 +56,7 @@ const Carousel: React.FC<CarouselProps> = ({
                     alt={`Slide ${pairIndex}-${imgIndex}`}
                     fill
                     className="object-cover rounded-lg"
-                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                   
                   />
                 </div>
 
