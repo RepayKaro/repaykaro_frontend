@@ -301,7 +301,7 @@ export default function HomePage() {
                 </section>
 
                 {/* Lender & Customer Platform */}
-                <section className="py-20 bg-white dark:bg-gray-900  shadow-inner-top">
+                <section className="py-10 bg-gray-50 dark:bg-gray-800  shadow-inner-top">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <ScrollAnimation animation="slideLeft" className="space-y-6" delay={500}>
@@ -331,7 +331,7 @@ export default function HomePage() {
                 </section>
 
                 {/* Additional Features */}
-                <section className="py-20 bg-gray-50 dark:bg-gray-800  shadow-inner-top">
+                <section className="py-10 bg-gray-50 dark:bg-gray-800  shadow-inner-top">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                             <ScrollAnimation animation="slideLeft" className="relative h-64 md:h-96 bg-purple-100 dark:bg-purple-900/20 rounded-3xl flex items-center justify-center hover-card overflow-hidden shadow-xl" delay={500}>
@@ -360,7 +360,7 @@ export default function HomePage() {
                 </section>
 
                 {/* How RepayKaro Works */}
-                <section className="py-20 bg-gray-50 dark:bg-gray-800  shadow-inner-top">
+                <section className="py-10 bg-gray-50 dark:bg-gray-800  shadow-inner-top">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center max-w-4xl mx-auto mb-16">
                             <ScrollAnimation animation="fade" delay={400}>
@@ -406,7 +406,7 @@ export default function HomePage() {
                                     delay={index * 200}
                                     className="hover-card"
                                 >
-                                    <div className="p-8 rounded-3xl shadow-xl bg-white dark:bg-gray-800 text-center h-full border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:border-purple-300 dark:hover:border-purple-600">
+                                    <div className="bg-gray-50 dark:bg-gray-900 p-8 rounded-3xl shadow-xl  text-center h-full border border-gray-100 dark:border-gray-700 transition-all duration-300 hover:border-purple-300 dark:hover:border-purple-600">
                                         <div className="w-16 h-16 mx-auto mb-6 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center text-purple-600 dark:text-purple-400 font-bold text-2xl shadow-md animate-pulse-subtle">
                                             {item.step}
                                         </div>
@@ -417,12 +417,7 @@ export default function HomePage() {
                             ))}
 
                         </div>
-
                     </div>
-
-
-
-
                 </section>
 
 
@@ -684,7 +679,7 @@ export default function HomePage() {
                 </section>
 
                 {/* FAQ Section */}
-                <section className="py-20 bg-gray-50 dark:bg-gray-800  shadow-inner-top">
+                <section className="py-10 bg-gray-50 dark:bg-gray-800  shadow-inner-top">
                     <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl"> {/* Increased max-width */}
                         <div className="flex flex-col md:flex-row items-center gap-12"> {/* Flex container */}
                             {/* Image Column (Left) */}
