@@ -10,9 +10,9 @@ type CarouselProps = {
   autoSlideInterval?: number;
 };
 
-const Carousel: React.FC<CarouselProps> = ({ 
-  images, 
-  autoSlideInterval = 3000 
+const Carousel: React.FC<CarouselProps> = ({
+  images,
+  autoSlideInterval = 3000
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
@@ -44,21 +44,22 @@ const Carousel: React.FC<CarouselProps> = ({
   }
 
   return (
-    <div className="w-full relative group">
+    <div className=" relative group">
       <div ref={sliderRef} className="keen-slider">
         {imagePairs.map((pair, pairIndex) => (
           <div key={pairIndex} className="keen-slider__slide">
-            <div className="flex gap-4"> {/* Container for the image pair */}
+            <div className="flex gap-2"> {/* Container for the image pair */}
               {pair.map((src, imgIndex) => (
-                <div key={imgIndex} className="relative flex-1 h-[300px]">
+                <div key={imgIndex} className="relative flex-1 aspect-[4/3] sm:aspect-[16/9] md:aspect-[4/3] lg:aspect-[16/9]">
                   <Image
                     src={src}
                     alt={`Slide ${pairIndex}-${imgIndex}`}
                     fill
                     className="object-cover rounded-lg"
-                    sizes="(max-width: 768px) 50vw, 25vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   />
                 </div>
+
               ))}
               {/* Fill empty space if odd number of images */}
               {pair.length === 1 && (
@@ -75,9 +76,8 @@ const Carousel: React.FC<CarouselProps> = ({
           <button
             key={idx}
             onClick={() => instanceRef.current?.moveToIdx(idx)}
-            className={`w-3 h-3 rounded-full transition-colors ${
-              currentSlide === idx ? 'bg-blue-600' : 'bg-gray-300'
-            }`}
+            className={`w-3 h-3 rounded-full transition-colors ${currentSlide === idx ? 'bg-blue-600' : 'bg-gray-300'
+              }`}
           />
         ))}
       </div>

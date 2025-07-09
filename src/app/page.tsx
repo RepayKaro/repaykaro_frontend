@@ -487,7 +487,7 @@ export default function HomePage() {
 
                                         By partnering with RepayKaro, brands get access to a high-intent, verified user base, while customers enjoy meaningful rewards like coupons, cashback offers, and vouchers — making repayments a more positive and engaging journey.
                                     </p>
-                                    <div className="mt-8 animate-fadeIn" style={{ animationDelay: '0.8s' }}>
+                                    <div className="mt-1 animate-fadeIn" style={{ animationDelay: '0.8s' }}>
                                         <Carousel images={theme === "dark" ? images : imagesWhite} />
                                     </div>
                                 </ScrollAnimation>
