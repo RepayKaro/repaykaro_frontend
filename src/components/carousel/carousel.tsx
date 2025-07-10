@@ -15,16 +15,24 @@ const Carousel: React.FC<CarouselProps> = ({
   autoSlideInterval = 3000
 }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
-    loop: true,
-    slides: {
-      perView: 2, // Show 2 slides at a time
-      spacing: 15, // Add gap between slides
+ const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
+  loop: true,
+  slides: {
+    perView: 2,
+    spacing: 8, // Optional: adjust spacing as needed
+  },
+  breakpoints: {
+    "(max-width: 768px)": {
+      slides: {
+        perView: 1,
+        spacing: 4, // Optional: reduce spacing on small screens
+      },
     },
-    slideChanged(slider) {
-      setCurrentSlide(slider.track.details.rel);
-    },
-  });
+  },
+  slideChanged(slider) {
+    setCurrentSlide(slider.track.details.rel);
+  },
+});
 
   // Auto-slide effect
   useEffect(() => {
@@ -39,8 +47,8 @@ const Carousel: React.FC<CarouselProps> = ({
 
   // Group images into pairs for 2-per-slide
   const imagePairs = [];
-  for (let i = 0; i < images.length; i += 2) {
-    imagePairs.push(images.slice(i, i + 2));
+  for (let i = 0; i < images.length; i += 1) {
+    imagePairs.push(images.slice(i, i + 1));
   }
 
   return (
@@ -50,7 +58,7 @@ const Carousel: React.FC<CarouselProps> = ({
           <div key={pairIndex} className="keen-slider__slide">
             <div className="flex gap-4"> {/* Container for the image pair */}
               {pair.map((src, imgIndex) => (
-                <div key={imgIndex} className="relative flex-1 aspect-[4/3] sm:aspect-[16/9] md:aspect-[4/3] lg:aspect-[16/9]">
+                <div key={imgIndex} className="relative flex-3 aspect-[2.5]">
                   <Image
                     src={src}
                     alt={`Slide ${pairIndex}-${imgIndex}`}
