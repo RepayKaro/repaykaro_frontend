@@ -309,7 +309,7 @@ export default function HomePage() {
                                     Lender & Customer <span className="gradient-text animate-gradient">Platform</span>
                                 </h2>
                                 <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed animate-fadeIn" style={{ animationDelay: '0.7s' }}>
-                                    RepayKaro is the part of True Business Minds Pvt. Ltd. and is designed with both the lender and customer in mind. Our approach focuses on creating a positive experience where customers are encouraged to settle their dues with added benefits, and lenders can recover bad debts with fewer hassles.
+                                    RepayKaro is designed with both the lender and customer in mind. Our approach focuses on creating a positive experience where customers are encouraged to settle their dues with added benefits, and lenders can recover bad debts with fewer hassles.
                                 </p>
                                 <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mt-8 mb-4 animate-fadeIn" style={{ animationDelay: '0.9s' }}>Incentives that Matter</h3>
                                 <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed animate-fadeIn" style={{ animationDelay: '1.1s' }}>

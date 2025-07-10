@@ -90,11 +90,11 @@ const Footer = () => {
                 Mon-Fri 9am-6pm
               </li>
               <li>
-                <a href="mailto:hr@truebusinessminds.com" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-300 flex items-center justify-center md:justify-start gap-2 py-2">
+                <a href="mailto:hr@repaykaro.com" className="text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400 transition-colors duration-300 flex items-center justify-center md:justify-start gap-2 py-2">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  hr@truebusinessminds.com
+                  hr@repaykaro.com
                 </a>
               </li>
               <li className="text-gray-600 dark:text-gray-300 flex items-center justify-center md:justify-start gap-2 py-2">
@@ -110,9 +110,9 @@ const Footer = () => {
           <div className="min-h-[150px]">
             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Our Address</h3>
             <address className="not-italic text-sm text-gray-600 dark:text-gray-300 space-y-4 flex flex-col items-center md:items-start">
-              <span>True Business Minds Private Limited</span>
-              <span>B-415 & 233 , Pacific Business Park</span>
-              <span>Ghaziabad, 201005 Uttar Pradesh</span>
+              <span>KnockOff Dues Technologies Pvt. Ltd.</span>
+              <span>3rd Floor, B-56 Old Plot, No-56, </span>
+              <span>South Ganesh Nagar, East Delhi, East Delhi, East Delhi- 110092, Delhi</span>
             </address>
           </div>
 
